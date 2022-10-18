@@ -1,7 +1,6 @@
 #include "main.h"
 #include <unistd.h>
 #include <stdarg.h>
-//#include <stddef.h>
 
 int _printf(const char *format, ...)
 {
@@ -53,7 +52,6 @@ int checker(const char *format, va_list args)
 }
 int _putint(int n)
 {
-	//int n = va_arg(args, int);
 	int len = 0;
 	unsigned int num = n;
 
@@ -84,59 +82,11 @@ int _puts(char *s)
 	for (i = 0; str[i] != '\0'; i++)
 		_putchar(str[i]);
 	return (i);
-
 }
 int _putchar(char c)
 {
 	return (write(1, &c, 1));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
