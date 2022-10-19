@@ -1,99 +1,49 @@
 #include "main.h"
-#include <unistd.h>
-#include <stdarg.h>
+#include <limits.h>
+#include <stdio.h>
 
+/**
+ * _printf - this produces output according to a format
+ * @format: format string containing the characters and specifiers
+ * Description: function will call the get_print() function that
+ * determines printing function to call depending on the conversion
+ * specifiers contained into fmt
+ * Return: length of the formatted output string
+ */
 int _printf(const char *format, ...)
 {
-	int len = 0;
-	va_list args;
+	int (*pfunc)(va_list, flags_t *);
+	const char *p;
+	va_list arguments;
+	flags_t flags = {0, 0, 0};
 
-	if (!format)
+	register int count = 0;
+
+	va_start(arguments, format);
+	if (!format || (format[0] == '%' && !format[1]))
 		return (-1);
-
-	va_start(args, format);
-	len += checker(format, args);
-	va_end(args);
-	return (len);
-}
-int checker(const char *format, va_list args)
-{
-	int len = 0, i = 0;
-	char *str, next, ch;
-
-	while (format[i])
+	if (format[0] == '%' && format[1] == ' ' && !format[2])
+		return (-1);
+	for (p = format; *p; p++)
 	{
-		next = format[i + 1];
-		if (format[i] == '%' && next == 'c')
+		if (*p == '%')
 		{
-			ch = va_arg(args, int);
-			len += _putchar(ch), i++;
-
-		}
-		else if (format[i] == '%' && next == 's')
-		{
-			str = va_arg(args, char *);
-			len += _puts(str), i++;
-		}
-		else if (format[i] == '%' && next == '%')
-		{
-			len += _putchar('%'), i++;
-		}
-		else if (format[i] == '%' && next == ' ')
-		{
-			return (-1);
-		}
-		else
-		{
-			len += _putchar(format[i]);
-		}
-		i++;
+			p++;
+			if (*p == '%')
+			{
+				count += _putchar('%');
+				continue;
+			}
+			while (get_flag(*p, &flags))
+				p++;
+			pfunc = get_print(*p);
+			count += (pfunc)
+				? pfunc(arguments, &flags)
+				: _printf("%%%c", *p);
+		} else
+			count += _putchar(*p);
 	}
-	return (len);
+	_putchar(-1);
+	va_end(arguments);
+	return (count);
 }
-int _putint(int n)
-{
-	int len = 0;
-	unsigned int num = n;
-
-	if (n < 0)
-	{
-		len += _putchar('-');
-		num = -n;
-	}
-	if (num / 10 > 0)
-	{
-		_putint(num / 10);
-	}
-	_putchar('0' + (num % 10));
-	while (n != 0)
-	{
-		n /= 10;
-		len++;
-	}
-		return (len);
-}
-int _puts(char *s)
-{
-	char *str = s;
-	int i;
-
-	if (!str)
-		str = "(null)";
-	for (i = 0; str[i] != '\0'; i++)
-		_putchar(str[i]);
-	return (i);
-}
-int _putchar(char c)
-{
-	return (write(1, &c, 1));
-}
-
-
-
-
-
-
-
-
-
-
