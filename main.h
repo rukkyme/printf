@@ -48,6 +48,7 @@ char *convert(unsigned long int num, int base, int lowercase);
 
 /* _printf */
 int _printf(const char *format, ...);
+int (*pfunc)(va_list, flags_t *);
 
 /* get_print */
 int (*get_print(char s))(va_list, flags_t *);
